@@ -22,3 +22,5 @@ stage/
 parts/
 prime/
 *.snap
+
+Cargo.lock
