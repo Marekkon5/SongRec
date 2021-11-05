@@ -1,3 +1,11 @@
+# FORK INFO:
+
+This fork is intended to be used as library with OneTagger. All credits belong to: https://github.com/marin-m/SongRec
+
+Permission: https://github.com/marin-m/SongRec/issues/66
+
+# Original README
+
 # SongRec
 
 SongRec is an open-source Shazam client for Linux, written in Rust.

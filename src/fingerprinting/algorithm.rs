@@ -1,10 +1,7 @@
 
 use chfft::RFft1D;
-use std::error::Error;
-use std::io::BufReader;
 use std::collections::HashMap;
 
-use crate::utils::ffmpeg_wrapper::decode_with_ffmpeg;
 use crate::fingerprinting::hanning::HANNING_WINDOW_2048_MULTIPLIERS;
 use crate::fingerprinting::signature_format::{DecodedSignature, FrequencyBand, FrequencyPeak};
 
@@ -35,43 +32,7 @@ pub struct SignatureGenerator {
 
 impl SignatureGenerator {
     
-    pub fn make_signature_from_file(file_path: &str) -> Result<DecodedSignature, Box<dyn Error>> {
-        
-        // Decode the .WAV, .MP3, .OGG or .FLAC file
-        
-        let mut decoder = rodio::Decoder::new(BufReader::new(std::fs::File::open(file_path)?));
-        
-        if let Err(ref _decoding_error) = decoder {
-            
-            // Try to decode with FFMpeg, if available, in case of failure with
-            // Rodio (most likely due to the use of a format unsupported by
-            // Rodio, such as .WMA or .MP4/.AAC)
-            
-            if let Some(new_decoder) = decode_with_ffmpeg(file_path) {
-                decoder = Ok(new_decoder);
-            }
-        }
-        
-        // Downsample the raw PCM samples to 16 KHz, and skip to the middle of the file
-        // in order to increase recognition odds. Take 12 seconds of sample.
-        
-        let converted_file = rodio::source::UniformSourceIterator::new(decoder?, 1, 16000);
-        
-        let raw_pcm_samples: Vec<i16> = converted_file.collect();
-        let mut raw_pcm_samples_slice: &[i16] = &raw_pcm_samples;
-        
-        let slice_len = raw_pcm_samples_slice.len().min(12 * 16000);
-        
-        if raw_pcm_samples_slice.len() > 12 * 16000 {
-            let middle = raw_pcm_samples.len() / 2;
-            
-            raw_pcm_samples_slice = &raw_pcm_samples_slice[middle - (6 * 16000) .. middle + (6 * 16000)];
-        }
-
-        Ok(SignatureGenerator::make_signature_from_buffer(&raw_pcm_samples_slice[..slice_len]))
-
-    }
-    
+   
     pub fn make_signature_from_buffer(s16_mono_16khz_buffer: &[i16]) -> DecodedSignature  {
         
         let mut this = SignatureGenerator {
