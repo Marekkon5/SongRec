@@ -28,8 +28,8 @@ pub fn recognize_song_from_signature(signature: &DecodedSignature) -> Result<Val
         "timezone": "Europe/Paris"
     });
 
-    let uuid_1 = Uuid::new_v4().to_hyphenated().to_string().to_uppercase();
-    let uuid_2 = Uuid::new_v4().to_hyphenated().to_string();
+    let uuid_1 = Uuid::new_v4().hyphenated().to_string().to_uppercase();
+    let uuid_2 = Uuid::new_v4().hyphenated().to_string();
 
     let url = format!("https://amp.shazam.com/discovery/v5/en/US/android/-/tag/{}/{}", uuid_1, uuid_2);
 

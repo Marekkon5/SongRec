@@ -14,10 +14,10 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-chfft = "0.3.4" # Fast Fourier transform
-byteorder = "1.3.4" # Used for reading and writing binary structures
-crc32fast = "1.2.0" # Used for the CRC-32 checksum in the binary signature
-base64 = "0.13"
+chfft = "0.3" # Fast Fourier transform
+byteorder = "1.4" # Used for reading and writing binary structures
+crc32fast = "1.3" # Used for the CRC-32 checksum in the binary signature
+base64 = "0.21"
 reqwest = { version = "0.11", features = ["json", "blocking", "rustls-tls"], default-features = false }
 
 #reqwest = { version = "0.11", features = ["blocking", "json"] }
@@ -28,11 +28,11 @@ reqwest = { version = "0.11", features = ["json", "blocking", "rustls-tls"], def
 # gdk = "0.13.2"
 # gio = "0.9.1"
 # hound = "3.4.0" # For writing WAV files
-serde_json = "1.0.57" # For decoding and encoding JSON
-uuid = { version = "0.8.1", features = ["v4"] }
+serde_json = "1.0" # For decoding and encoding JSON
+uuid = { version = "1.4", features = ["v4"] }
 # glib = "0.10.3"
-percent-encoding = "2.1.0" # For percent-encoding contents in URLs
-serde = { version = "1.0.115", features = ["derive"] }
+percent-encoding = "2.3" # For percent-encoding contents in URLs
+serde = { version = "1.0", features = ["derive"] }
 # csv = "1.1.3"
 # chrono = "0.4.13" # For formatting dates
 # app_dirs = "1.2.1" # For obtaining and creating either the %APPDATA%, the dotfile path or similar

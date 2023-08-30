@@ -1,6 +1,8 @@
 use std::collections::HashMap;
 use std::error::Error;
 use std::io::{Cursor, Seek, SeekFrom, Write};
+use base64::engine::general_purpose::STANDARD;
+use base64::engine::Engine;
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 use std::cmp::Ordering;
 use crc32fast::Hasher;
@@ -205,7 +207,7 @@ impl DecodedSignature {
         
         assert!(uri.starts_with(DATA_URI_PREFIX));
         
-        Ok(DecodedSignature::decode_from_binary(&base64::decode(&uri[DATA_URI_PREFIX.len()..])?)?)
+        Ok(DecodedSignature::decode_from_binary(&STANDARD.decode(&uri[DATA_URI_PREFIX.len()..])?)?)
         
     }
     
@@ -299,7 +301,7 @@ impl DecodedSignature {
     
     pub fn encode_to_uri(self: &Self) -> Result<String, Box<dyn Error>> {
         
-        Ok(format!("{}{}", DATA_URI_PREFIX, base64::encode(self.encode_to_binary()?)))
+        Ok(format!("{}{}", DATA_URI_PREFIX, STANDARD.encode(self.encode_to_binary()?)))
         
     }
     
