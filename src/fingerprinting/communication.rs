@@ -54,8 +54,16 @@ pub fn recognize_song_from_signature(signature: &DecodedSignature) -> Result<Val
         .json(&post_data)
         .send()?;
 
-    // Check for errors
     let status = response.status();
+
+    // Rate limit
+    if status.as_u16() == 429 {
+        warn!("Shazam rate limit, retrying in 10s...");
+        std::thread::sleep(Duration::from_secs(10));
+        return recognize_song_from_signature(signature);
+    }
+
+    // Error log
     if !status.is_success() {
         let text = response.text()?;
         warn!("Shazam non-success status code: {}, body: {text}", status);
