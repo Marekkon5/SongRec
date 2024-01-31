@@ -1,3 +1,5 @@
+#[macro_use] extern crate log;
+
 pub mod fingerprinting {
     pub mod communication;
     pub mod algorithm;

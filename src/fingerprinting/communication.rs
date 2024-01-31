@@ -40,7 +40,7 @@ pub fn recognize_song_from_signature(signature: &DecodedSignature) -> Result<Val
 
     let client = reqwest::blocking::Client::new();
     let response = client.post(&url)
-        .timeout(Duration::from_secs(20))
+        .timeout(Duration::from_secs(30))
         .query(&[
             ("sync", "true"),
             ("webv3", "true"),
@@ -53,6 +53,14 @@ pub fn recognize_song_from_signature(signature: &DecodedSignature) -> Result<Val
         .headers(headers)
         .json(&post_data)
         .send()?;
+
+    // Check for errors
+    let status = response.status();
+    if !status.is_success() {
+        let text = response.text()?;
+        warn!("Shazam non-success status code: {}, body: {text}", status);
+        return Ok(serde_json::from_str(&text)?)
+    }
     
     Ok(response.json()?)
     
