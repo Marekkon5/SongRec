@@ -9,7 +9,7 @@ use uuid::Uuid;
 use crate::fingerprinting::signature_format::DecodedSignature;
 use crate::fingerprinting::user_agent::USER_AGENTS;
 
-pub fn recognize_song_from_signature(signature: &DecodedSignature) -> Result<Value, Box<dyn Error>>  {
+pub fn recognize_song_from_signature(signature: &DecodedSignature, retry: u32) -> Result<Value, Box<dyn Error>>  {
     
     let timestamp_ms = SystemTime::now().duration_since(SystemTime::UNIX_EPOCH)?.as_millis();
     
@@ -58,9 +58,13 @@ pub fn recognize_song_from_signature(signature: &DecodedSignature) -> Result<Val
 
     // Rate limit
     if status.as_u16() == 429 {
-        warn!("Shazam rate limit, retrying in 10s...");
-        std::thread::sleep(Duration::from_secs(10));
-        return recognize_song_from_signature(signature);
+        if retry >= 5 {
+            return Err("Shazam rate limit reached too high delays".into());
+        }
+        let secs = 8 + 2u64.pow(retry);
+        warn!("Shazam rate limit, retrying in {secs}s...");
+        std::thread::sleep(Duration::from_secs(secs));
+        return recognize_song_from_signature(signature, retry + 1);
     }
 
     // Error log
